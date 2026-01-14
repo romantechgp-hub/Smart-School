@@ -46,3 +46,8 @@ export interface SchoolLink {
   title: string;
   url: string;
 }
+
+export interface ChatMessage {
+  role: 'user' | 'model';
+  parts: { text: string }[];
+}

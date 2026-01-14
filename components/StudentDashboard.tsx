@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { User, Notice, Banner, SchoolLink, IdCardConfig } from '../types';
+import AITutor from './AITutor';
 
 interface StudentDashboardProps {
   currentUser: User;
@@ -12,7 +13,7 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ currentUser, onLogo
   const [notices, setNotices] = useState<Notice[]>([]);
   const [banners, setBanners] = useState<Banner[]>([]);
   const [links, setLinks] = useState<SchoolLink[]>([]);
-  const [view, setView] = useState<'home' | 'profile' | 'idcard'>('home');
+  const [view, setView] = useState<'home' | 'profile' | 'idcard' | 'aitutor'>('home');
   const [isEditing, setIsEditing] = useState(false);
   const [showPhotoModal, setShowPhotoModal] = useState(false);
   const [isCameraActive, setIsCameraActive] = useState(false);
@@ -141,22 +142,25 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ currentUser, onLogo
       </header>
 
       {/* Hero Banners */}
-      <div className="mb-10 space-y-4">
-        {banners.map(b => (
-          <div key={b.id} className={`relative rounded-3xl overflow-hidden shadow-lg ${
-            b.size === 'small' ? 'h-32' : b.size === 'large' ? 'h-64' : 'h-48'
-          }`}>
-            <img src={b.imageUrl} className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-6">
-              <h2 className="text-white text-xl font-bold">{b.text}</h2>
+      {view === 'home' && (
+        <div className="mb-10 space-y-4">
+          {banners.map(b => (
+            <div key={b.id} className={`relative rounded-3xl overflow-hidden shadow-lg ${
+              b.size === 'small' ? 'h-32' : b.size === 'large' ? 'h-64' : 'h-48'
+            }`}>
+              <img src={b.imageUrl} className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-6">
+                <h2 className="text-white text-xl font-bold">{b.text}</h2>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
-      <nav className="flex justify-center space-x-4 mb-10 bg-white p-2 rounded-2xl shadow-sm border">
+      <nav className="flex justify-center space-x-2 mb-10 bg-white p-2 rounded-2xl shadow-sm border overflow-x-auto">
         {[
           { id: 'home', label: 'হোম', icon: '🏠' },
+          { id: 'aitutor', label: 'AI টিউটর', icon: '🤖' },
           { id: 'profile', label: 'প্রোফাইল', icon: '👤' },
           { id: 'idcard', label: 'আইডি কার্ড', icon: '🪪' }
         ].map(t => (
@@ -166,18 +170,18 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ currentUser, onLogo
               setView(t.id as any);
               setIsEditing(false);
             }}
-            className={`flex-1 flex flex-col items-center py-2 rounded-xl transition-all ${
+            className={`flex-1 min-w-[70px] flex flex-col items-center py-2 rounded-xl transition-all ${
               view === t.id ? 'bg-indigo-600 text-white shadow-md' : 'text-gray-500 hover:bg-gray-50'
             }`}
           >
-            <span className="text-2xl">{t.icon}</span>
-            <span className="text-xs font-bold mt-1">{t.label}</span>
+            <span className="text-xl">{t.icon}</span>
+            <span className="text-[10px] font-bold mt-1 uppercase tracking-tighter">{t.label}</span>
           </button>
         ))}
       </nav>
 
       {view === 'home' && (
-        <div className="space-y-8">
+        <div className="space-y-8 animate-fade-in">
           {/* Links */}
           <section>
             <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
@@ -223,8 +227,12 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ currentUser, onLogo
         </div>
       )}
 
+      {view === 'aitutor' && (
+        <AITutor currentUser={currentUser} />
+      )}
+
       {view === 'profile' && (
-        <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
+        <div className="bg-white rounded-3xl shadow-xl overflow-hidden animate-fade-in">
           <div className="h-32 bg-indigo-600 relative">
              <div className="absolute -bottom-16 left-8 group cursor-pointer" onClick={() => setShowPhotoModal(true)}>
                <div className="w-32 h-32 bg-white rounded-3xl p-2 shadow-xl relative overflow-hidden">
@@ -345,7 +353,7 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ currentUser, onLogo
       )}
 
       {view === 'idcard' && (
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center animate-fade-in">
            <h3 className="text-2xl font-bold mb-8">আপনার ডিজিটাল আইডি কার্ড</h3>
            
            {/* Customization Panel */}
@@ -536,7 +544,7 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ currentUser, onLogo
         </div>
       )}
 
-      {/* Admin Bottom Banner */}
+      {/* Footer Banner */}
       <div className="mt-20 border-t pt-10">
          <div className="bg-white p-8 rounded-[40px] shadow-sm border flex flex-col md:flex-row items-center gap-8">
             <div className="w-24 h-24 bg-indigo-600 rounded-3xl flex items-center justify-center text-white text-4xl shadow-lg">
