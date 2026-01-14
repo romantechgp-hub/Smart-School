@@ -1,0 +1,7 @@
+{
+  "name": "Smart School Management System",
+  "description": "A comprehensive school management platform with student profiling, automated ID card generation, and an advanced admin dashboard for notices and banners.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
